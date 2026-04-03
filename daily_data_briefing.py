@@ -1,5 +1,5 @@
 """
-폐렴구균 백신 일일 데이터 브리핑 (무료 버전)
+엽산 일일 데이터 브리핑 (무료 버전)
 매일 오전 8시 자동 실행 - 5개 소스 수집 후 이메일 발송
 """
 
@@ -11,7 +11,7 @@ from email.mime.text import MIMEText
 
 from g2b_collector        import collect_g2b_notices
 from naver_news_collector import collect_naver_news
-from pubmed_collector     import collect_pneumo_papers
+from pubmed_collector     import collect_folate_papers
 from kdca_collector       import collect_kdca
 from mfds_collector       import collect_mfds
 
@@ -219,7 +219,7 @@ def build_html_email(today_str, g2b, news, pubmed, kdca, mfds):
                 color:white;padding:24px;border-radius:10px;margin-bottom:20px;
                 text-align:center;'>
       <div style='font-size:22px;font-weight:bold;margin-bottom:4px;'>
-        💉 폐렴구균 백신 일일 인텔리전스 브리핑
+        💉 엽산 일일 인텔리전스 브리핑
       </div>
       <div style='opacity:0.85;font-size:14px;'>{today_str} &nbsp;|&nbsp;
         총 {total}건 수집 &nbsp;|&nbsp; 자동 발송 (GitHub Actions)
@@ -280,7 +280,7 @@ def main():
     today_str = today.strftime("%Y년 %m월 %d일")
 
     print("=" * 60)
-    print(f"  💉 폐렴구균 백신 일일 데이터 브리핑 (무료 버전)")
+    print(f"  💉 엽산 일일 데이터 브리핑 (무료 버전)")
     print(f"  {today_str}")
     print("=" * 60)
 
@@ -293,7 +293,7 @@ def main():
     print(f"  -> {len(news)}건")
 
     print("\n[3/5] PubMed 수집 중...")
-    pubmed = collect_pneumo_papers()
+    pubmed = collect_folate_papers()
     print(f"  -> {len(pubmed)}건")
 
     print("\n[4/5] 질병관리청 수집 중...")
@@ -307,7 +307,7 @@ def main():
     total = len(g2b) + len(news) + len(pubmed) + len(kdca) + len(mfds)
 
     print("\n[📧] 이메일 발송 중...")
-    subject   = f"💉 폐렴구균 백신 브리핑 — {today_str} ({total}건 수집)"
+    subject   = f"💉 엽산 브리핑 — {today_str} ({total}건 수집)"
     html_body = build_html_email(today_str, g2b, news, pubmed, kdca, mfds)
     send_email(subject, html_body)
 
