@@ -48,7 +48,14 @@ def search_naver_news(keyword, display=5):
 
 def collect_naver_news():
     """엽산 관련 최신 뉴스 수집"""
-    keywords = ["엽산",]
+    keywords = [
+        "엽산 효능",
+        "임산부 엽산 추천",
+        "폴산 비타민B9",
+        "엽산 과다복용",
+        "엽산 결핍 증상",
+        "천연 엽산 합성 엽산"
+    ]
     all_news = []
     seen = set()
 
