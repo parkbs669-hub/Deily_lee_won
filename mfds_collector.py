@@ -20,7 +20,7 @@ CUTOFF_YEAR   = "2025"   # 2025년 이후만 수집
 NUM_OF_ROWS   = 100
 MAX_ITEMS     = 20
 
-VACCINE_KEYWORDS = ["folate"]
+VACCINE_KEYWORDS = ["엽산", "폴산", "folate", "folic"]
 
 
 def collect_mfds():
