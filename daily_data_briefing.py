@@ -9,12 +9,14 @@ import datetime
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
+# 수집기 모듈 임포트
 from g2b_collector        import collect_g2b_notices
 from naver_news_collector import collect_naver_news
-from pubmed_collector     import collect_folate_papers
+from pubmed_collector     import collect_folate_papers  # pneumo -> folate 변경
 from kdca_collector       import collect_kdca
 from mfds_collector       import collect_mfds
 
+# 환경 변수 설정
 NAVER_ADDRESS  = os.environ.get("NAVER_ADDRESS", "")
 NAVER_PASSWORD = os.environ.get("NAVER_PASSWORD", "")
 
@@ -84,7 +86,7 @@ def fmt_naver(items):
 
 def fmt_pubmed(items):
     if not items:
-        return "<p style='color:#888;'>최근 논문 없음</p>"
+        return "<p style='color:#888;'>최근 엽산 관련 논문 없음</p>"
     rows = ""
     for i in items:
         title    = i.get("title", i.get("Title", "제목 없음"))
@@ -118,7 +120,7 @@ def fmt_pubmed(items):
 
 def fmt_kdca(items):
     if not items:
-        return "<p style='color:#888;'>질병관리청 데이터 없음</p>"
+        return "<p style='color:#888;'>데이터 없음</p>"
     cards = ""
     for i in items:
         year    = i.get("year", "").replace("년", "")
@@ -140,13 +142,13 @@ def fmt_kdca(items):
     return f"""
     <div style='padding:4px;'>{cards}</div>
     <p style='color:#aaa;font-size:11px;margin-top:8px;'>
-      ※ 출처: 질병관리청 감염병포털 (방역통합정보시스템 전수신고 기준)
+      ※ 출처: 질병관리청 감염병포털
     </p>"""
 
 
 def fmt_mfds(items):
     if not items:
-        return "<p style='color:#888;'>최근 국가출하승인 내역 없음 (신규 출하 시 표시됩니다)</p>"
+        return "<p style='color:#888;'>최근 내역 없음</p>"
     rows = ""
     for i in items:
         sample   = i.get("SAMPLE_TYPE", i.get("sampleType", ""))
@@ -176,10 +178,7 @@ def fmt_mfds(items):
 def build_html_email(today_str, g2b, news, pubmed, kdca, mfds):
     total = len(g2b) + len(news) + len(pubmed) + len(kdca) + len(mfds)
 
-    kdca_total = sum(
-        int(i.get("resultVal", i.get("patntCnt", 0)) or 0)
-        for i in kdca
-    )
+    kdca_total = sum(int(i.get("resultVal", i.get("patntCnt", 0)) or 0) for i in kdca)
     kdca_badge = f"{kdca_total}건" if kdca_total else "0건"
 
     def card(emoji, name, badge, color):
@@ -222,7 +221,7 @@ def build_html_email(today_str, g2b, news, pubmed, kdca, mfds):
         💉 엽산 일일 인텔리전스 브리핑
       </div>
       <div style='opacity:0.85;font-size:14px;'>{today_str} &nbsp;|&nbsp;
-        총 {total}건 수집 &nbsp;|&nbsp; 자동 발송 (GitHub Actions)
+        총 {total}건 수집 &nbsp;|&nbsp; 자동 발송
       </div>
     </div>
 
@@ -230,24 +229,23 @@ def build_html_email(today_str, g2b, news, pubmed, kdca, mfds):
            style='margin-bottom:20px;table-layout:fixed;'>
       <tr>
         {card("🏛️", "나라장터",   f"{len(g2b)}건",    "#e67e22")}
-        {card("📰",  "네이버뉴스", f"{len(news)}건",   "#3498db")}
-        {card("🔬",  "PubMed",     f"{len(pubmed)}건", "#9b59b6")}
-        {card("🏥",  "질병관리청", kdca_badge,         "#e74c3c")}
-        {card("💊",  "식약처",     f"{len(mfds)}건",   "#1abc9c")}
+        {card("📰", "네이버뉴스", f"{len(news)}건",   "#3498db")}
+        {card("🔬", "PubMed",     f"{len(pubmed)}건", "#9b59b6")}
+        {card("🏥", "질병관리청",  kdca_badge,         "#e74c3c")}
+        {card("💊", "식약처",     f"{len(mfds)}건",   "#1abc9c")}
       </tr>
     </table>
 
     {section("🏛️", "나라장터 입찰공고",      len(g2b),    "#e67e22", fmt_g2b(g2b))}
-    {section("📰",  "국내 최신 뉴스",         len(news),   "#3498db", fmt_naver(news))}
-    {section("🔬",  "최신 논문",              len(pubmed), "#9b59b6", fmt_pubmed(pubmed))}
-    {section("🏥",  "질병관리청 감염병 현황", kdca_total,  "#e74c3c", fmt_kdca(kdca))}
-    {section("💊",  "식약처 국가출하승인",    len(mfds),   "#1abc9c", fmt_mfds(mfds))}
+    {section("📰", "국내 최신 뉴스",          len(news),   "#3498db", fmt_naver(news))}
+    {section("🔬", "최신 엽산 논문",          len(pubmed), "#9b59b6", fmt_pubmed(pubmed))}
+    {section("🏥", "질병관리청 현황",         kdca_total,  "#e74c3c", fmt_kdca(kdca))}
+    {section("💊", "식약처 국가출하승인",    len(mfds),   "#1abc9c", fmt_mfds(mfds))}
 
     <div style='text-align:center;color:#aaa;font-size:12px;
                 padding:16px;border-top:1px solid #e0e0e0;margin-top:8px;'>
       📊 데이터 출처: 나라장터 · 네이버뉴스 · PubMed · 질병관리청 · 식약처<br>
-      🤖 자동 발송: GitHub Actions (매일 오전 8시) &nbsp;|&nbsp; 💰 비용: 0원<br>
-      🧠 AI 분석 브리핑은 매주 월요일 오전 7시 별도 발송
+      🤖 자동 발송: GitHub Actions &nbsp;|&nbsp; 💰 비용: 0원
     </div>
 
   </div>
@@ -268,7 +266,7 @@ def send_email(subject, html_body):
         with smtplib.SMTP_SSL("smtp.naver.com", 465) as s:
             s.login(NAVER_ADDRESS, NAVER_PASSWORD)
             s.send_message(msg)
-        print("  ✅ 이메일 발송 완료 →", NAVER_ADDRESS.split("@")[0] + "@***")
+        print("  ✅ 이메일 발송 완료")
         return True
     except Exception as e:
         print(f"  ❌ 이메일 오류: {e}")
@@ -280,29 +278,24 @@ def main():
     today_str = today.strftime("%Y년 %m월 %d일")
 
     print("=" * 60)
-    print(f"  💉 엽산 일일 데이터 브리핑 (무료 버전)")
+    print(f"  💉 엽산 일일 데이터 브리핑")
     print(f"  {today_str}")
     print("=" * 60)
 
     print("\n[1/5] 나라장터 수집 중...")
     g2b = collect_g2b_notices()
-    print(f"  -> {len(g2b)}건")
 
     print("\n[2/5] 네이버 뉴스 수집 중...")
     news = collect_naver_news()
-    print(f"  -> {len(news)}건")
 
-    print("\n[3/5] PubMed 수집 중...")
-    pubmed = collect_folate_papers()
-    print(f"  -> {len(pubmed)}건")
+    print("\n[3/5] PubMed(엽산 논문) 수집 중...")
+    pubmed = collect_folate_papers()  # pneumo -> folate 변경
 
     print("\n[4/5] 질병관리청 수집 중...")
     kdca = collect_kdca()
-    print(f"  -> {len(kdca)}건")
 
     print("\n[5/5] 식약처 수집 중...")
     mfds = collect_mfds()
-    print(f"  -> {len(mfds)}건")
 
     total = len(g2b) + len(news) + len(pubmed) + len(kdca) + len(mfds)
 
@@ -313,7 +306,6 @@ def main():
 
     print("\n" + "=" * 60)
     print(f"  ✅ 완료! 총 {total}건 수집")
-    print(f"  💰 비용: 0원")
     print("=" * 60)
 
 
