@@ -1,4 +1,4 @@
-name: Daily Data Briefing (Free)
+name: folate_Daily Data Briefing (Free)
 on:
   schedule:
     - cron: '0 23 * * *'  # 매일 오전 8시 KST
@@ -19,7 +19,7 @@ jobs:
       - name: Install packages
         run: |
           pip install requests
-      - name: Run Daily Data Briefing
+      - name: Run folate_Daily Data Briefing
         env:
           G2B_API_KEY: ${{ secrets.G2B_API_KEY }}
           PUBLIC_DATA_API_KEY: ${{ secrets.PUBLIC_DATA_API_KEY }}
@@ -28,4 +28,4 @@ jobs:
           NAVER_PASSWORD: ${{ secrets.NAVER_PASSWORD }}
           NAVER_CLIENT_ID: ${{ secrets.NAVER_CLIENT_ID }}
           NAVER_CLIENT_SECRET: ${{ secrets.NAVER_CLIENT_SECRET }}
-        run: python daily_data_briefing.py
+        run: python folate_daily_data_briefing.py
