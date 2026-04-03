@@ -14,7 +14,7 @@ API_KEY = (
 )
 
 BASE_URL = "https://apis.data.go.kr/1790387/EIDAPIService"
-PNEUMO_KEYWORDS = ["폐렴구균", "Streptococcus"]
+folate_KEYWORDS = ["엽산"]
 
 
 def collect_kdca():
@@ -61,10 +61,10 @@ def collect_kdca():
         print(f"  KDCA 전체: {len(items)}건")
 
         if items:
-            pneumo = [i for i in items if any(kw in str(i) for kw in PNEUMO_KEYWORDS)]
-            print(f"  KDCA 폐렴구균: {len(pneumo)}건")
+            folate = [i for i in items if any(kw in str(i) for kw in folate_KEYWORDS)]
+            print(f"  KDCA 엽산: {len(folate)}건")
 
-            return pneumo if pneumo else items[:5]
+            return folate if folate else items[:5]
 
     except Exception as e:
         print(f"  KDCA /Disease 오류: {e}")
@@ -89,10 +89,10 @@ def collect_kdca():
             items = items or []
             print(f"  KDCA ({prev_year}) 전체: {len(items)}건")
             if items:
-                pneumo = [i for i in items if any(kw in str(i) for kw in PNEUMO_KEYWORDS)]
-                print(f"  KDCA ({prev_year}) 폐렴구균: {len(pneumo)}건")
+                folate = [i for i in items if any(kw in str(i) for kw in folate_KEYWORDS)]
+                print(f"  KDCA ({prev_year}) 엽산: {len(folate)}건")
 
-                return pneumo if pneumo else items[:5]
+                return folate if folate else items[:5]
     except Exception as e:
         print(f"  KDCA ({prev_year}) 오류: {e}")
 
