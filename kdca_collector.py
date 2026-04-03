@@ -14,7 +14,7 @@ API_KEY = (
 )
 
 BASE_URL = "https://apis.data.go.kr/1790387/EIDAPIService"
-folate_KEYWORDS = ["엽산"]
+folate_KEYWORDS = ["엽산", "영양결핍", "비타민", "folate"]
 
 
 def collect_kdca():
