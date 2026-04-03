@@ -15,7 +15,7 @@ API_KEY = (
 )
 
 URL = "http://apis.data.go.kr/1230000/ad/BidPublicInfoService/getBidPblancListInfoThngPPSSrch"
-KEYWORDS = ["엽산"]
+KEYWORDS = ["엽산", "폴산", "Folic Acid", "비타민B9"]
 
 
 def collect_g2b_notices():
