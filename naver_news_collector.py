@@ -1,5 +1,5 @@
 """
-네이버 뉴스 수집기 - 폐렴구균 백신 최신 뉴스
+네이버 뉴스 수집기 - 엽산 최신 뉴스
 """
 import requests
 import os
@@ -47,15 +47,8 @@ def search_naver_news(keyword, display=5):
 
 
 def collect_naver_news():
-    """폐렴구균 관련 최신 뉴스 수집"""
-    keywords = [
-        "폐렴구균 백신",
-        "캡박시브",
-        "PCV20 PCV21",
-        "프리베나 백신",
-        "폐렴구균 NIP",
-        "폐렴구균 예방접종",
-    ]
+    """엽산 관련 최신 뉴스 수집"""
+    keywords = ["엽산",]
     all_news = []
     seen = set()
 
