@@ -1,6 +1,6 @@
 """
 식약처 수집기 - 의약품 국가출하승인정보
-goods_name='폐렴구균' 으로 검색 (성분명 기준)
+goods_name='엽산' 으로 검색 (성분명 기준)
 전체 페이지를 역순으로 순회하여 최신 데이터(2025년~) 수집
 """
 import requests
@@ -20,8 +20,7 @@ CUTOFF_YEAR   = "2025"   # 2025년 이후만 수집
 NUM_OF_ROWS   = 100
 MAX_ITEMS     = 20
 
-VACCINE_KEYWORDS = ["폐렴", "프리베나", "신플로릭스", "뉴모박스", "캡박시브",
-                    "pneumo", "prevnar", "synflorix", "PCV", "PPSV"]
+VACCINE_KEYWORDS = ["folate"]
 
 
 def collect_mfds():
@@ -33,11 +32,11 @@ def collect_mfds():
         "serviceKey": API_KEY,
         "pageNo":     1,
         "numOfRows":  NUM_OF_ROWS,
-        "goods_name": "폐렴구균",
+        "goods_name": "엽산",
     }
     try:
         resp = requests.get(URL, params=params, timeout=15)
-        print(f"  MFDS '폐렴구균' HTTP: {resp.status_code}")
+        print(f"  MFDS '엽산' HTTP: {resp.status_code}")
         text = resp.text.strip()
         if not text or not text.startswith("<"):
             print(f"  MFDS 비정상 응답: {text[:200]}")
@@ -81,7 +80,7 @@ def collect_mfds():
 
                 page_has_recent = True
 
-                # 폐렴구균 백신 관련 항목만 수집
+                # 엽산 관련 항목만 수집
                 sample_type = data.get("SAMPLE_TYPE", "").lower()
                 goods_name  = data.get("GOODS_NAME", "").lower()
                 combined    = sample_type + " " + goods_name
