@@ -14,7 +14,7 @@ API_KEY = (
 
 BASE_URL = "https://apis.data.go.kr/B551182/dgamtCrtrInfoService1.2/getDgamtList"
 
-VACCINE_KEYWORDS = ["프리베나", "신플로릭스", "뉴모박스", "캡박시브", "폐렴구균", "pneumo", "prevnar"]
+VACCINE_KEYWORDS = ["엽산", "folate"]
 
 # 검색 파라미터명 후보 (심평원 API는 문서와 실제가 다를 수 있음)
 SEARCH_PARAM_CANDIDATES = ["itmNm", "itm_nm", "itemName", "item_name", "medNm", "drugNm"]
